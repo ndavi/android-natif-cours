@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.AppCompatTextView;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -13,16 +14,23 @@ import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.Toast;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class MainActivity extends AppCompatActivity implements View.OnClickListener, AdapterView.OnItemSelectedListener, View.OnLongClickListener, AdapterView.OnItemClickListener {
 
     Spinner spinner;
     Button button;
     Switch uiSwitch;
     GridView gridView;
+    private QuestionBoardDAO datasource;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        datasource = new QuestionBoardDAO(this);
+        datasource.open();
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
@@ -36,19 +44,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         gridView.setOnItemClickListener(this);
         gridView.setOnLongClickListener(this);
 
-        final String [] itemArray = {"Catégorie 1", "Catégorie 2","Catégorie 3"};
+        final String [] itemArray = QuestionBoardDAO.allCategories;
         ArrayAdapter <String> adapter = new ArrayAdapter<String>(this,android.R.layout.simple_dropdown_item_1line,itemArray);
 
-        final String [] gridViewArray = {"Catégorie 1", "Catégorie 2","Catégorie 3"};
-        ArrayAdapter <String> gridAdapter = new ArrayAdapter<String>(this,android.R.layout.simple_dropdown_item_1line,itemArray);
 
         spinner.setAdapter(adapter);
+
         spinner.setOnItemSelectedListener(this);
 
-        gridView.setAdapter(gridAdapter);
-
-
-
+        gridView.setAdapter(arrayAdapterFromCategory(uiSwitch.isChecked()));
     }
 
 
@@ -68,6 +72,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 } else {
                     uiSwitch.setText("Question");
                 }
+                gridView.setAdapter(arrayAdapterFromCategory(uiSwitch.isChecked()));
                 break;
             }
 
@@ -77,11 +82,30 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
+    private ArrayAdapter arrayAdapterFromCategory(boolean isResponse) {
+        CharSequence text = spinner.getSelectedItem().toString();
+
+        List<QuestionBoard> questions = datasource.getAllQuestionsByCategory((String)text);
+        List<String> gridViewArray = new ArrayList<>();
+        for (QuestionBoard question : questions) {
+            if(!isResponse) {
+                gridViewArray.add(question.getQuestion());
+            } else {
+                gridViewArray.add(question.getQuestion() + " // " + question.getResponse());
+            }
+        }
+
+        ArrayAdapter <String> gridAdapter = new ArrayAdapter<String>(this,android.R.layout.simple_dropdown_item_1line,gridViewArray);
+        return gridAdapter;
+    }
+
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         Context context = getApplicationContext();
         CharSequence text = spinner.getSelectedItem().toString();
         int duration = Toast.LENGTH_SHORT;
+
+        gridView.setAdapter(arrayAdapterFromCategory(uiSwitch.isChecked()));
 
         Toast toast = Toast.makeText(context, text, duration);
         toast.show();
@@ -99,6 +123,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        Context context = getApplicationContext();
+        AppCompatTextView textView = (AppCompatTextView)view;
+        CharSequence text = textView.getText();
+        int duration = Toast.LENGTH_SHORT;
 
+        Toast toast = Toast.makeText(context, text, duration);
+        toast.show();
     }
 }
