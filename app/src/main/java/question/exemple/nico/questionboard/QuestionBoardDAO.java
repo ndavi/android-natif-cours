@@ -17,14 +17,14 @@ public class QuestionBoardDAO {
 
     // Champs de la base de données
     private SQLiteDatabase database;
-    private MySQLiteHelper dbHelper;
-    private String[] allColumns = { MySQLiteHelper.COLUMN_ID,
-            MySQLiteHelper.COLUMN_QUESTION, MySQLiteHelper.COLUMN_RESPONSE, MySQLiteHelper.COLUMN_CATEGORY };
+    private DBHelper dbHelper;
+    private String[] allColumns = { DBHelper.COLUMN_ID,
+            DBHelper.COLUMN_QUESTION, DBHelper.COLUMN_RESPONSE, DBHelper.COLUMN_CATEGORY };
 
     public static final String[] allCategories = {"Informatique", "Santé","Politique"};
 
     public QuestionBoardDAO(Context context) {
-        dbHelper = new MySQLiteHelper(context);
+        dbHelper = new DBHelper(context);
     }
 
     public void open() throws SQLException {
@@ -37,13 +37,13 @@ public class QuestionBoardDAO {
 
     public QuestionBoard createQuestion(String question, String response, String category) {
         ContentValues values = new ContentValues();
-        values.put(MySQLiteHelper.COLUMN_QUESTION, question);
-        values.put(MySQLiteHelper.COLUMN_RESPONSE, response);
-        values.put(MySQLiteHelper.COLUMN_CATEGORY, category);
-        long insertId = database.insert(MySQLiteHelper.TABLE_QUESTIONBOARD, null,
+        values.put(DBHelper.COLUMN_QUESTION, question);
+        values.put(DBHelper.COLUMN_RESPONSE, response);
+        values.put(DBHelper.COLUMN_CATEGORY, category);
+        long insertId = database.insert(DBHelper.TABLE_QUESTIONBOARD, null,
                 values);
-        Cursor cursor = database.query(MySQLiteHelper.TABLE_QUESTIONBOARD,
-                allColumns, MySQLiteHelper.COLUMN_ID + " = " + insertId, null,
+        Cursor cursor = database.query(DBHelper.TABLE_QUESTIONBOARD,
+                allColumns, DBHelper.COLUMN_ID + " = " + insertId, null,
                 null, null, null);
         cursor.moveToFirst();
         QuestionBoard questionBoard = cursorToComment(cursor);
@@ -54,14 +54,14 @@ public class QuestionBoardDAO {
     public void deleteQuestion(QuestionBoard comment) {
         long id = comment.getId();
         System.out.println("Question deleted with id: " + id);
-        database.delete(MySQLiteHelper.TABLE_QUESTIONBOARD, MySQLiteHelper.COLUMN_ID
+        database.delete(DBHelper.TABLE_QUESTIONBOARD, DBHelper.COLUMN_ID
                 + " = " + id, null);
     }
 
     public List<QuestionBoard> getAllQuestions() {
         List<QuestionBoard> comments = new ArrayList<QuestionBoard>();
 
-        Cursor cursor = database.query(MySQLiteHelper.TABLE_QUESTIONBOARD,
+        Cursor cursor = database.query(DBHelper.TABLE_QUESTIONBOARD,
                 allColumns, null, null, null, null, null);
 
         cursor.moveToFirst();
@@ -79,7 +79,7 @@ public class QuestionBoardDAO {
 
         String selection = "category =?";
         String[] selectionArgs = {category};
-        Cursor cursor = database.query(MySQLiteHelper.TABLE_QUESTIONBOARD,
+        Cursor cursor = database.query(DBHelper.TABLE_QUESTIONBOARD,
                 allColumns, selection, selectionArgs, null, null, null);
 
         cursor.moveToFirst();

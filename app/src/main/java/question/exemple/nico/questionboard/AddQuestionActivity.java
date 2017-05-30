@@ -52,10 +52,7 @@ public class AddQuestionActivity extends AppCompatActivity implements View.OnCli
     public void onClick(View v) {
         datasource.createQuestion(textQuestion.getText().toString(),
                 textResponse.getText().toString(), spinner.getSelectedItem().toString());
-
-        Intent intentMain = new Intent(AddQuestionActivity.this ,
-                MainActivity.class);
-        AddQuestionActivity.this.startActivity(intentMain);
+        finish();
 
     }
 }

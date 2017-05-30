@@ -19,12 +19,12 @@
         android:layout_marginEnd="8dp">
 
         <EditText
-            android:id="@+id/editText"
+            android:id="@+id/rechercheView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/mainActivity_marginTop"
-            android:focusable="false"
-            android:hint="Rechercher..." />
+            android:ems="10"
+            android:hint="Rechercher..."
+            android:inputType="textPersonName" />
 
         <Button
             android:id="@+id/button2"
