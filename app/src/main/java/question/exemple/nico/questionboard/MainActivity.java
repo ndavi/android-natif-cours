@@ -20,6 +20,7 @@ import android.widget.Switch;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener, AdapterView.OnItemSelectedListener, AdapterView.OnItemClickListener, AdapterView.OnItemLongClickListener, TextWatcher {
@@ -54,8 +55,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         gridView.setOnItemClickListener(this);
         gridView.setOnItemLongClickListener(this);
         editText.addTextChangedListener(this);
-
-        final String [] itemArray = QuestionBoardDAO.allCategories;
+        final String [] itemArray = Arrays.toString(Category.values()).replaceAll("^.|.$", "").split(", ");
         ArrayAdapter <String> adapter = new ArrayAdapter<String>(this,android.R.layout.simple_dropdown_item_1line,itemArray);
 
 
@@ -140,13 +140,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        Context context = getApplicationContext();
-        AppCompatTextView textView = (AppCompatTextView)view;
-        CharSequence text = textView.getText();
-        int duration = Toast.LENGTH_SHORT;
-
-        Toast toast = Toast.makeText(context, text, duration);
-        toast.show();
+        Intent intentMain = new Intent(MainActivity.this ,
+                AddQuestionActivity.class);
+        QuestionBoard q = questionsList.get(position);
+        intentMain.putExtra("params",q);
+        MainActivity.this.startActivity(intentMain);
     }
 
     @Override

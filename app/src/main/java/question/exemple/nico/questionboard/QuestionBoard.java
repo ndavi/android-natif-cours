@@ -1,15 +1,17 @@
 package question.exemple.nico.questionboard;
 
+import java.io.Serializable;
+
 /**
  * Created by nico on 5/2/17.
  */
 
-public class QuestionBoard {
+public class QuestionBoard implements Serializable {
 
     private long id;
     private String question;
     private String response;
-    private String category;
+    private Category category;
 
     public long getId() {
         return id;
@@ -36,10 +38,10 @@ public class QuestionBoard {
     }
 
     public String getCategory() {
-        return category;
+        return category.toString();
     }
 
-    public void setCategory(String category) {
+    public void setCategory(Category category) {
         this.category = category;
     }
 

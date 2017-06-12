@@ -21,8 +21,6 @@ public class QuestionBoardDAO {
     private String[] allColumns = { DBHelper.COLUMN_ID,
             DBHelper.COLUMN_QUESTION, DBHelper.COLUMN_RESPONSE, DBHelper.COLUMN_CATEGORY };
 
-    public static final String[] allCategories = {"Informatique", "Santé","Politique"};
-
     public QuestionBoardDAO(Context context) {
         dbHelper = new DBHelper(context);
     }
@@ -92,12 +90,22 @@ public class QuestionBoardDAO {
         return comments;
     }
 
+    public void update(QuestionBoard question) {
+        ContentValues newValues = new ContentValues();
+        newValues.put(DBHelper.COLUMN_QUESTION, question.getQuestion());
+        newValues.put(DBHelper.COLUMN_CATEGORY, question.getCategory().toString());
+        newValues.put(DBHelper.COLUMN_RESPONSE, question.getResponse());
+
+        database.update(DBHelper.TABLE_QUESTIONBOARD, newValues, DBHelper.COLUMN_ID + "=" + question.getId(), null);
+
+    }
+
     private QuestionBoard cursorToComment(Cursor cursor) {
         QuestionBoard question = new QuestionBoard();
         question.setId(cursor.getLong(0));
         question.setQuestion(cursor.getString(1));
         question.setResponse(cursor.getString(2));
-        question.setCategory(cursor.getString(3));
+        question.setCategory(Category.valueOf(cursor.getString(3)));
         return question;
     }
 }
