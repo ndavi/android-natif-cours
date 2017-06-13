@@ -7,14 +7,14 @@ import android.util.Log;
 
 public class MySQLiteHelper extends SQLiteOpenHelper {
 
-    public static final String TABLE_QUESTIONBOARD = "QuestionBoard";
+    public static final String TABLE_QUESTIONBOARD = "Question";
     public static final String COLUMN_ID = "_id";
     public static final String COLUMN_QUESTION = "question";
     public static final String COLUMN_RESPONSE = "response";
     public static final String COLUMN_CATEGORY = "category";
 
 
-    private static final String DATABASE_NAME = "QuestionBoard.db";
+    private static final String DATABASE_NAME = "Question.db";
     private static final int DATABASE_VERSION = 1;
 
     // Commande sql pour la création de la base de données

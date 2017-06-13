@@ -23,13 +23,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     Button button;
     Switch uiSwitch;
     GridView gridView;
-    private QuestionBoardDAO datasource;
+    private QuestionDAO DAO;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        datasource = new QuestionBoardDAO(this);
-        datasource.open();
+        DAO = new QuestionDAO(this);
+        DAO.open();
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
@@ -44,7 +44,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         gridView.setOnItemClickListener(this);
         gridView.setOnLongClickListener(this);
 
-        final String [] itemArray = QuestionBoardDAO.allCategories;
+        final String [] itemArray = QuestionDAO.allCategories;
         ArrayAdapter <String> adapter = new ArrayAdapter<String>(this,android.R.layout.simple_dropdown_item_1line,itemArray);
 
 
@@ -61,7 +61,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         switch (v.getId()) {
             case  R.id.button2: {
                 Intent intentMain = new Intent(MainActivity.this ,
-                        AddQuestionActivity.class);
+                        QuestionActivity.class);
                 MainActivity.this.startActivity(intentMain);
                 break;
             }
@@ -85,9 +85,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private ArrayAdapter arrayAdapterFromCategory(boolean isResponse) {
         CharSequence text = spinner.getSelectedItem().toString();
 
-        List<QuestionBoard> questions = datasource.getAllQuestionsByCategory((String)text);
+        List<Question> questions = DAO.getAllQuestionsByCategory((String)text);
         List<String> gridViewArray = new ArrayList<>();
-        for (QuestionBoard question : questions) {
+        for (Question question : questions) {
             if(!isResponse) {
                 gridViewArray.add(question.getQuestion());
             } else {

@@ -13,7 +13,7 @@ import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 
-public class QuestionBoardDAO {
+public class QuestionDAO {
 
     // Champs de la base de données
     private SQLiteDatabase database;
@@ -23,7 +23,7 @@ public class QuestionBoardDAO {
 
     public static final String[] allCategories = {"Informatique", "Santé","Politique"};
 
-    public QuestionBoardDAO(Context context) {
+    public QuestionDAO(Context context) {
         dbHelper = new MySQLiteHelper(context);
     }
 
@@ -35,7 +35,7 @@ public class QuestionBoardDAO {
         dbHelper.close();
     }
 
-    public QuestionBoard createQuestion(String question, String response, String category) {
+    public Question createQuestion(String question, String response, String category) {
         ContentValues values = new ContentValues();
         values.put(MySQLiteHelper.COLUMN_QUESTION, question);
         values.put(MySQLiteHelper.COLUMN_RESPONSE, response);
@@ -46,27 +46,27 @@ public class QuestionBoardDAO {
                 allColumns, MySQLiteHelper.COLUMN_ID + " = " + insertId, null,
                 null, null, null);
         cursor.moveToFirst();
-        QuestionBoard questionBoard = cursorToComment(cursor);
+        Question questionBoard = cursorToComment(cursor);
         cursor.close();
         return questionBoard;
     }
 
-    public void deleteQuestion(QuestionBoard comment) {
+    public void deleteQuestion(Question comment) {
         long id = comment.getId();
         System.out.println("Question deleted with id: " + id);
         database.delete(MySQLiteHelper.TABLE_QUESTIONBOARD, MySQLiteHelper.COLUMN_ID
                 + " = " + id, null);
     }
 
-    public List<QuestionBoard> getAllQuestions() {
-        List<QuestionBoard> comments = new ArrayList<QuestionBoard>();
+    public List<Question> getAllQuestions() {
+        List<Question> comments = new ArrayList<Question>();
 
         Cursor cursor = database.query(MySQLiteHelper.TABLE_QUESTIONBOARD,
                 allColumns, null, null, null, null, null);
 
         cursor.moveToFirst();
         while (!cursor.isAfterLast()) {
-            QuestionBoard comment = cursorToComment(cursor);
+            Question comment = cursorToComment(cursor);
             comments.add(comment);
             cursor.moveToNext();
         }
@@ -74,8 +74,8 @@ public class QuestionBoardDAO {
         return comments;
     }
 
-    public List<QuestionBoard> getAllQuestionsByCategory(String category) {
-        List<QuestionBoard> comments = new ArrayList<QuestionBoard>();
+    public List<Question> getAllQuestionsByCategory(String category) {
+        List<Question> comments = new ArrayList<Question>();
 
         String selection = "category =?";
         String[] selectionArgs = {category};
@@ -84,7 +84,7 @@ public class QuestionBoardDAO {
 
         cursor.moveToFirst();
         while (!cursor.isAfterLast()) {
-            QuestionBoard comment = cursorToComment(cursor);
+            Question comment = cursorToComment(cursor);
             comments.add(comment);
             cursor.moveToNext();
         }
@@ -92,8 +92,8 @@ public class QuestionBoardDAO {
         return comments;
     }
 
-    private QuestionBoard cursorToComment(Cursor cursor) {
-        QuestionBoard question = new QuestionBoard();
+    private Question cursorToComment(Cursor cursor) {
+        Question question = new Question();
         question.setId(cursor.getLong(0));
         question.setQuestion(cursor.getString(1));
         question.setResponse(cursor.getString(2));

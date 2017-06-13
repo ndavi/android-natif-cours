@@ -4,7 +4,7 @@ package question.exemple.nico.questionboard;
  * Created by nico on 5/2/17.
  */
 
-public class QuestionBoard {
+public class Question {
 
     private long id;
     private String question;
