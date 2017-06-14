@@ -75,8 +75,26 @@ public class QuestionBoardDAO {
     public List<QuestionBoard> getAllQuestionsByCategory(String category) {
         List<QuestionBoard> comments = new ArrayList<QuestionBoard>();
 
-        String selection = "category =?";
-        String[] selectionArgs = {category};
+        String selection = "category =? and response !=?";
+        String[] selectionArgs = {category,""};
+        Cursor cursor = database.query(DBHelper.TABLE_QUESTIONBOARD,
+                allColumns, selection, selectionArgs, null, null, null);
+
+        cursor.moveToFirst();
+        while (!cursor.isAfterLast()) {
+            QuestionBoard comment = cursorToComment(cursor);
+            comments.add(comment);
+            cursor.moveToNext();
+        }
+        cursor.close();
+        return comments;
+    }
+
+    public List<QuestionBoard> getAllQuestionsByCategoryWithoutResponse(String category) {
+        List<QuestionBoard> comments = new ArrayList<QuestionBoard>();
+
+        String selection = "category =? and response==?";
+        String[] selectionArgs = {category,""};
         Cursor cursor = database.query(DBHelper.TABLE_QUESTIONBOARD,
                 allColumns, selection, selectionArgs, null, null, null);
 

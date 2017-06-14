@@ -64,9 +64,9 @@ public class AddQuestionActivity extends AppCompatActivity implements View.OnCli
 
     @Override
     public void onClick(View v) {
-        if(textQuestion.getText().toString().isEmpty() || textResponse.getText().toString().isEmpty()) {
+        if(textQuestion.getText().toString().isEmpty()) {
             AlertDialog.Builder ab = new AlertDialog.Builder(this);
-            ab.setMessage("Il n'est pas possible de soumettre un champ vide")
+            ab.setMessage("Le champ question ne peux être vide")
                     .setTitle("Erreur")
                     .setNeutralButton("Ok",null)
                     .show();
@@ -82,7 +82,9 @@ public class AddQuestionActivity extends AppCompatActivity implements View.OnCli
                     question.setCategory(category);
                 }
             }
-            question.setResponse(textResponse.getText().toString());
+            if(!textResponse.getText().toString().isEmpty()) {
+                question.setResponse(textResponse.getText().toString());
+            }
             datasource.update(question);
         }
         finish();

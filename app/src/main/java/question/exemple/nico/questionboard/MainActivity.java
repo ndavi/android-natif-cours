@@ -98,7 +98,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private ArrayAdapter arrayAdapterFromCategory(boolean isResponse, String search) {
         CharSequence text = spinner.getSelectedItem().toString();
-        List<QuestionBoard> questions = datasource.getAllQuestionsByCategory((String)text);
+        List<QuestionBoard> questions;
+        if(isResponse) {
+            questions = datasource.getAllQuestionsByCategory((String) text);
+        } else {
+            questions = datasource.getAllQuestionsByCategoryWithoutResponse((String) text);
+        }
         ArrayAdapter<QuestionBoard> adapter = new ArrayAdapter<QuestionBoard>(this,android.R.layout.simple_dropdown_item_1line,questions);
         for (QuestionBoard question : questions) {
             if(search != "") {
