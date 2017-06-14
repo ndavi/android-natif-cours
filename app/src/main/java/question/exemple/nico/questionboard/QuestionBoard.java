@@ -13,6 +13,13 @@ public class QuestionBoard implements Serializable {
     private String response;
     private Category category;
 
+
+    private Boolean isResponse = false;
+
+    public void setResponse(Boolean response) {
+        isResponse = response;
+    }
+
     public long getId() {
         return id;
     }
@@ -47,9 +54,10 @@ public class QuestionBoard implements Serializable {
 
     @Override
     public String toString() {
-        return  ", question='" + question + '\'' +
-                ", response='" + response + '\'' +
-                ", category='" + category + '\'' +
-                '}';
+        if(isResponse) {
+            return this.getQuestion() + " // " + this.getResponse();
+        } else {
+            return this.getQuestion();
+        }
     }
 }

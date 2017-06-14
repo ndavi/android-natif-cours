@@ -1,5 +1,6 @@
 package question.exemple.nico.questionboard;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TextInputEditText;
@@ -61,12 +62,16 @@ public class AddQuestionActivity extends AppCompatActivity implements View.OnCli
         }
     }
 
-    protected void createToast() {
-
-    }
-
     @Override
     public void onClick(View v) {
+        if(textQuestion.getText().toString().isEmpty() || textResponse.getText().toString().isEmpty()) {
+            AlertDialog.Builder ab = new AlertDialog.Builder(this);
+            ab.setMessage("Il n'est pas possible de soumettre un champ vide")
+                    .setTitle("Erreur")
+                    .setNeutralButton("Ok",null)
+                    .show();
+            return;
+        }
         if(question == null) {
             datasource.createQuestion(textQuestion.getText().toString(),
                     textResponse.getText().toString(), spinner.getSelectedItem().toString());

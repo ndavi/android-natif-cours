@@ -31,13 +31,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     GridView gridView;
     EditText editText;
     private QuestionBoardDAO datasource;
-    private List<QuestionBoard> questionsList;
     private int selectedItemToDeleted = 0;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        questionsList = new ArrayList<>();
         datasource = new QuestionBoardDAO(this);
         datasource.open();
 
@@ -101,24 +99,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private ArrayAdapter arrayAdapterFromCategory(boolean isResponse, String search) {
         CharSequence text = spinner.getSelectedItem().toString();
         List<QuestionBoard> questions = datasource.getAllQuestionsByCategory((String)text);
-        questionsList.clear();
-        List<String> gridViewArray = new ArrayList<>();
+        ArrayAdapter<QuestionBoard> adapter = new ArrayAdapter<QuestionBoard>(this,android.R.layout.simple_dropdown_item_1line,questions);
         for (QuestionBoard question : questions) {
             if(search != "") {
                 if(!question.getQuestion().contains(search)) {
+                    questions.remove(question);
                     continue;
                 }
             }
-            if(!isResponse) {
-                gridViewArray.add(question.getQuestion());
-            } else {
-                gridViewArray.add(question.getQuestion() + " // " + question.getResponse());
-            }
-            questionsList.add(question);
+            question.setResponse(isResponse);
         }
-
-        ArrayAdapter <String> gridAdapter = new ArrayAdapter<String>(this,android.R.layout.simple_dropdown_item_1line,gridViewArray);
-        return gridAdapter;
+        return adapter;
     }
 
     @Override
@@ -142,7 +133,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         Intent intentMain = new Intent(MainActivity.this ,
                 AddQuestionActivity.class);
-        QuestionBoard q = questionsList.get(position);
+        QuestionBoard q = (QuestionBoard)gridView.getAdapter().getItem(position);
         intentMain.putExtra("params",q);
         MainActivity.this.startActivity(intentMain);
     }
@@ -161,9 +152,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         public void onClick(DialogInterface dialog, int which) {
             switch (which){
                 case DialogInterface.BUTTON_POSITIVE:
-                    QuestionBoard question = questionsList.get(selectedItemToDeleted);
+                    QuestionBoard question = (QuestionBoard)gridView.getAdapter().getItem(selectedItemToDeleted);
                     datasource.deleteQuestion(question);
-                    gridView.setAdapter(arrayAdapterFromCategory(uiSwitch.isChecked(),""));
+                    ArrayAdapter<QuestionBoard> adapter = (ArrayAdapter<QuestionBoard>) gridView.getAdapter();
+                    adapter.remove(question);
+                    adapter.notifyDataSetChanged();
                     break;
             }
         }
